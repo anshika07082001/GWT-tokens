@@ -3,12 +3,10 @@ import { useJwt } from "react-jwt";
 import { useNavigate } from 'react-router-dom';
 
 type tok = {email:string,password:string,token:string}
+type data ={ email:string,password:string,exp:any,role:string }
 
 type logProps={
   tokenArr:tok[]
-}
-type data ={
-  email:string,password:string,exp:any,role:string
 }
 
 const Login = (props:logProps) => {
@@ -23,13 +21,12 @@ const Login = (props:logProps) => {
   
   // function used to login the user
   const submitHandler=(e:React.FormEvent<HTMLFormElement>)=>{
-    var tok:tok={email:'',password:'',token:''}
     e.preventDefault()
     tokenArr.map((item)=>{
       if(emailRef.current!==null && pwdRef.current!==null){
         if(emailRef.current.value!=='' && pwdRef.current.value!==''){
           if(item.email==emailRef.current.value && item.password==pwdRef.current.value){
-            tok = item
+            token = item
             alert('Login successful')
             setMsg('')
           }
@@ -42,7 +39,7 @@ const Login = (props:logProps) => {
         }
       }
     })
-    setToken(tok)
+    setToken(token)
     e.currentTarget.reset()
   }
 
