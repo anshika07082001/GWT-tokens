@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useJwt } from "react-jwt";
+import { decodeToken, isExpired } from "react-jwt";
 import { useNavigate } from 'react-router-dom';
 
 type tok = {email:string,password:string,token:string}
@@ -13,7 +13,9 @@ const Login = (props:logProps) => {
   var navigate = useNavigate()
   const {tokenArr}=props
   var [token,setToken]=useState<tok>({email:'',password:'',token:''})
-  var { decodedToken } = useJwt<data>(token.token);
+  const myDecodedToken = decodeToken<data>(token.token);
+  const isMyTokenExpired = isExpired(token.token);
+
   var [msg,setMsg]=useState('')
 
   var emailRef= useRef<HTMLInputElement>(null)
@@ -43,11 +45,17 @@ const Login = (props:logProps) => {
     e.currentTarget.reset()
   }
 
+  // function checks the role of user 
   useEffect(()=>{
-    if(decodedToken?.role=='Admin'){
-      navigate('/dashboard')
+    if(myDecodedToken?.role=='Admin'){
+      if(isMyTokenExpired==false){
+        navigate('/dashboard')
+      }
+      else{
+        setMsg('Token Expired')
+      }
     }
-  },[decodedToken])
+  },[myDecodedToken])
 
   return (
   <>
